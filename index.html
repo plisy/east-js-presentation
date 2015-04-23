@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>East.JS - React love story</title>
+
+		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="author" content="Hakim El Hattab">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<link rel="stylesheet" href="css/presentation.css">
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h4><span class="react-text">React:</span> The love story born out of experience</h4>
+					<img src="images/react.png" alt="React logo" class="react-logo">
+				</section>
+
+				<section>
+
+					<h2>Peter Lisy</h2>
+					<p>
+						Application Developer @ IBM
+					</p>
+					<p>
+						<small class="react-text">
+							<a href="mailto:peter.lisy@sk.ibm.com" class="react-text">peter.lisy@sk.ibm.com</a>
+						</small>
+						<small>@petolisy</small>
+					</p>
+				</section>
+
+				<section>
+					<h2>
+						Agenda
+					</h2>
+					<p>What problem are we trying to solve?</p>
+					<p class="fragment">Some code</p>
+					<p class="fragment">Dataflow and state</p>
+					<p class="fragment">Higher order components/mixins</p>
+
+					<aside class="notes">
+						<p>We'll talk about the general problem with UI building.</p>
+						<p>then we'll touch on where this went wrong in e.g. angular</p>
+						<p>I'll try to show you where I think react got it right</p>
+						<p>react has it's own problems to be solved (pleasant ones)</p>
+						<p>I'll try to show you how the data flow works in components</p>
+						<p>and some ways to reuse functionality and compose existing stuff</p>
+					</aside>
+				</section>
+
+				<section>
+					<p>
+						Building modern UIs is becoming really hard.
+					</p>
+					<p>
+						There is too many moving parts that change a LOT when user interacts with them.
+					</p>
+					<p>
+						And I'm not even considering PM interaction with the UI.
+					</p>
+
+					<aside class="notes">
+						To survive in this world we need to be smart about it.
+						SOLID parts break much harder than moving pieces.
+						And managing visual state that's being changed from different places is really hard.
+
+						What's the easiest thing you can ever do in programming?
+						Nope, not hello world.
+					</aside>
+
+				</section>
+
+				<section>
+					<h1>State &#8658; UI</h1>
+
+					<aside class="notes">
+						Let's assume, that we could have our UI state in a variable and we have a function, that takes that state and renders the whole UI.
+						Ok let's solve one problem at a time. There is the issue of having the whole state in a single variable. That sounds pretty insane. But what if I told you that variable doesn't change.
+						Then this gets really simple!
+					</aside>
+				</section>
+
+				<section>
+					<h2>Re-render the whole app on every state change</h2>
+					<p>Your app needs to be a pure function of state to achieve this.</p>
+				</section>
+
+				<section>
+					<h3>When the data changes <span class="react-text">React re-renders the entire component.</span></h3>
+					<small>Every place data is displayed is guranteed to be up-to-date</small>
+				</section>
+
+				<section>
+					You <span class="react-text">declare</span> how the data should be displayed and react takes care of the rest.
+					<p>No more explicit DOM manipulation.</p>
+				</section>
+
+				<section>
+					You cannot just throw away the entire DOM on every state change.
+
+					<h1>Virtual DOM</h1>
+
+					<aside class="notes">
+						<ul>
+							<li>DOM is really slow</li>
+							<li>You would lose DOM state (like scroll position, form field values)</li>
+						</ul>
+					</aside>
+
+				</section>
+
+				<section>
+					<h2>On every update</h2>
+					<ul>
+						<li>React rebuilds virtual DOM</li>
+						<li>diffs the changes with real DOM</li>
+						<li>computes minimal set of changes</li>
+						<li>and batch executes all the updates</li>
+					</ul>
+				</section>
+
+				<section>
+					Since virtual DOM is not coupled to the browser, it can run in node.js.
+					<br />
+					This allows you to do your first render on server and deliver already useable application.
+				</section>
+
+				<section>
+					First problem solved.
+
+					<h1><span class="react-text">Re-render</span> your app on every state update.</h1>
+				</section>
+
+				<section>
+					<h3>We all like separation of concerns, right?</h3>
+					<p class="fragment">
+						Reduce <span class="react-text">coupling</span>
+						<span class="fragment">
+							, increase <span class="react-text">cohesion.</span>
+						</span>
+					</p>
+
+					<aside class="notes">
+						Coupling: The degree to which each program module relies on each of the other modules.
+						Cohesion: the degree to which elements of a module belong together.
+					</aside>
+
+				</section>
+
+				<section>
+					<h4>Templates encourage poor separation of concerns</h4>
+				</section>
+
+				<section>
+					<h3>We usually have three different files.</h3>
+					<p class="fragment">
+						one for your <span class="react-text">markup</span>
+						<span class="fragment">, one for <span class="react-text">logic</span></span>
+						<span class="fragment">, and one for <span class="react-text">styling</span></span>
+					</p>
+				</section>
+
+				<section>
+					<h2>
+						<spam class="react-text">Single</spam> responsibility
+					</h2>
+					<h3><span class="react-text">One</span> reason for change</h3>
+					<p><span class="react-text">Three</span> different files, usually far from each other.</p>
+					<p><small>not a very good developer experince</small></p>
+				</section>
+
+				<section>
+					<h1><span class="react-text">React component</span></h1>
+					<p>
+						A highly cohesive UI building block that is loosely coupled with other components.
+					</p>
+				</section>
+
+				<section>
+					<h2>Components are <span class="react-text">reusable.</span></h2>
+				</section>
+
+				<section>
+					<h2>Components are <span class="react-text">composable.</span></h2>
+				</section>
+
+				<section>
+					<h2>Components are <span class="react-text">testable.</span></h2>
+				</section>
+
+				<section>
+					<img src="images/code_kitty.jpg" />
+				</section>
+
+				<section>
+					<h3>Summary</h3>
+					<p>
+						<ul>
+							<li>Build your UIs as a pure function</li>
+							<li>Containers/Components</li>
+							<li>Write simple components with single responsibility</li>
+							<li>React is AWESOME</li>
+						</ul>
+					</p>
+				</section>
+
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>

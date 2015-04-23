@@ -1,0 +1,17 @@
+* {
+    font-family: proxima-nova, 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;
+}
+
+.reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
+    text-transform: none !important;
+    font-weight: 200;
+}
+
+.react-text, .reveal a.react-text {
+    color: #61dafb;
+}
+
+.reveal section img.react-logo {
+    border: none;
+    background: transparent;
+}
